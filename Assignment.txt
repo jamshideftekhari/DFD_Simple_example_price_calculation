@@ -1,0 +1,30 @@
+Assignment 
+
+Accept 4 inputs from the user: 
+•	number of items,
+•	a price, 
+•	a 2-letter country code 
+•	a date (only for spreadsheet)
+
+Stage 1: Create a 1-line calculator that computes the price of the order, giving a discount based on the order value (not number of items), adding country tax/moms based on the country and the discounted order value
+Order_Value	Discount_Rate
+$1000	           3%
+$5000	           5%
+$7000	           7%
+$10000	           10%
+$50000	           15%
+	
+Land	Moms/VAT Rate
+DK	25%
+BE	21%
+DE	19%
+NL	21%
+FR	20%
+
+
+
+Stage 2 for spreadsheets only: 
+Create a set of orders from different months and different states. Produce a report as histogram of sales results by state, then a second sales report histogram of sales results by month. 
+Create a web page presentation that shows your sponsors what you have created, with the formula you used, sample inputs and outputs. the sales history and the graphs.
+
+

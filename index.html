@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Order Price Calculator - Sponsor Presentation</title>
+<style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 2rem auto; max-width: 900px; color: #222; }
+    h1 { border-bottom: 3px solid #4C72B0; padding-bottom: .3rem; }
+    h2 { color: #4C72B0; margin-top: 2rem; }
+    pre { background: #f4f4f4; padding: 1rem; border-radius: 6px; overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+    th, td { border: 1px solid #ddd; padding: 4px 8px; text-align: right; }
+    th { background: #4C72B0; color: white; }
+    img { max-width: 100%; border: 1px solid #ddd; border-radius: 6px; margin-top: .5rem; }
+    code { background: #eee; padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+    <h1>Order Price Calculator &mdash; Stage 1 &amp; Stage 2 Prototype</h1>
+    <p>This page presents the order price calculator (Stage 1) and the
+       resulting sales history and reports (Stage 2), built using the
+       traditional structured-analysis approach (context diagram, DFD,
+       ERD) documented in <code>Stage1_Design.md</code> and
+       <code>Stage2_Design.md</code>.</p>
+
+    <h2>Formula</h2>
+    <pre>order_value      = number_of_items * unit_price
+discount_rate    = lookup(order_value)          # tiered bracket, 0-15%
+discounted_value = order_value * (1 - discount_rate)
+vat_rate         = lookup(country_code)          # DK 25%, BE 21%, DE 19%, NL 21%, FR 20%
+vat_amount       = discounted_value * vat_rate
+order_total      = discounted_value + vat_amount</pre>
+
+    
+    <h2>Sample input / output</h2>
+    <p><strong>Input:</strong> number_of_items=10,
+       unit_price=600.0, country_code=DE,
+       order_date=2026-02-03</p>
+    <pre>-------------------------------------------
+            ORDER PRICE RECEIPT            
+-------------------------------------------
+ Items x Unit price : 10 x 600.00
+ Country            : DE (Germany)
+ Date               : 2026-02-03
+-------------------------------------------
+ Order value        :     6,000.00
+ Discount ( 5.0%)   :      -300.00
+ Discounted value   :     5,700.00
+ VAT/moms (19.0%)   :     1,083.00
+-------------------------------------------
+ ORDER TOTAL        :     6,783.00
+-------------------------------------------</pre>
+    
+
+    
+    <h2>Sales history (25 of 120 orders shown)</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>order_id</th>
+      <th>order_date</th>
+      <th>country_code</th>
+      <th>number_of_items</th>
+      <th>unit_price</th>
+      <th>order_value</th>
+      <th>discount_rate</th>
+      <th>discount_amount</th>
+      <th>discounted_value</th>
+      <th>vat_rate</th>
+      <th>vat_amount</th>
+      <th>order_total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3</td>
+      <td>2025-01-02</td>
+      <td>FR</td>
+      <td>45</td>
+      <td>181.24</td>
+      <td>8,155.80</td>
+      <td>0.07</td>
+      <td>570.91</td>
+      <td>7,584.89</td>
+      <td>0.20</td>
+      <td>1,516.98</td>
+      <td>9,101.87</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>2025-01-04</td>
+      <td>DE</td>
+      <td>53</td>
+      <td>36.90</td>
+      <td>1,955.70</td>
+      <td>0.03</td>
+      <td>58.67</td>
+      <td>1,897.03</td>
+      <td>0.19</td>
+      <td>360.44</td>
+      <td>2,257.46</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>2025-01-06</td>
+      <td>DE</td>
+      <td>4</td>
+      <td>230.05</td>
+      <td>920.20</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>920.20</td>
+      <td>0.19</td>
+      <td>174.84</td>
+      <td>1,095.04</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>2025-01-07</td>
+      <td>NL</td>
+      <td>175</td>
+      <td>90.58</td>
+      <td>15,851.50</td>
+      <td>0.10</td>
+      <td>1,585.15</td>
+      <td>14,266.35</td>
+      <td>0.21</td>
+      <td>2,995.93</td>
+      <td>17,262.28</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>2025-01-08</td>
+      <td>DK</td>
+      <td>13</td>
+      <td>225.05</td>
+      <td>2,925.65</td>
+      <td>0.03</td>
+      <td>87.77</td>
+      <td>2,837.88</td>
+      <td>0.25</td>
+      <td>709.47</td>
+      <td>3,547.35</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>2025-01-17</td>
+      <td>DK</td>
+      <td>48</td>
+      <td>73.41</td>
+      <td>3,523.68</td>
+      <td>0.03</td>
+      <td>105.71</td>
+      <td>3,417.97</td>
+      <td>0.25</td>
+      <td>854.49</td>
+      <td>4,272.46</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>2025-01-19</td>
+      <td>FR</td>
+      <td>215</td>
+      <td>73.93</td>
+      <td>15,894.95</td>
+      <td>0.10</td>
+      <td>1,589.50</td>
+      <td>14,305.45</td>
+      <td>0.20</td>
+      <td>2,861.09</td>
+      <td>17,166.55</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2025-01-22</td>
+      <td>BE</td>
+      <td>72</td>
+      <td>223.58</td>
+      <td>16,097.76</td>
+      <td>0.10</td>
+      <td>1,609.78</td>
+      <td>14,487.98</td>
+      <td>0.21</td>
+      <td>3,042.48</td>
+      <td>17,530.46</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>2025-01-23</td>
+      <td>FR</td>
+      <td>14</td>
+      <td>172.76</td>
+      <td>2,418.64</td>
+      <td>0.03</td>
+      <td>72.56</td>
+      <td>2,346.08</td>
+      <td>0.20</td>
+      <td>469.22</td>
+      <td>2,815.30</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>2025-01-26</td>
+      <td>DE</td>
+      <td>177</td>
+      <td>185.08</td>
+      <td>32,759.16</td>
+      <td>0.10</td>
+      <td>3,275.92</td>
+      <td>29,483.24</td>
+      <td>0.19</td>
+      <td>5,601.82</td>
+      <td>35,085.06</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>2025-02-04</td>
+      <td>DK</td>
+      <td>374</td>
+      <td>143.23</td>
+      <td>53,568.02</td>
+      <td>0.15</td>
+      <td>8,035.20</td>
+      <td>45,532.82</td>
+      <td>0.25</td>
+      <td>11,383.20</td>
+      <td>56,916.02</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>2025-02-07</td>
+      <td>DE</td>
+      <td>84</td>
+      <td>117.35</td>
+      <td>9,857.40</td>
+      <td>0.07</td>
+      <td>690.02</td>
+      <td>9,167.38</td>
+      <td>0.19</td>
+      <td>1,741.80</td>
+      <td>10,909.18</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>2025-02-09</td>
+      <td>BE</td>
+      <td>84</td>
+      <td>144.06</td>
+      <td>12,101.04</td>
+      <td>0.10</td>
+      <td>1,210.10</td>
+      <td>10,890.94</td>
+      <td>0.21</td>
+      <td>2,287.10</td>
+      <td>13,178.03</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>2025-02-18</td>
+      <td>DK</td>
+      <td>312</td>
+      <td>194.14</td>
+      <td>60,571.68</td>
+      <td>0.15</td>
+      <td>9,085.75</td>
+      <td>51,485.93</td>
+      <td>0.25</td>
+      <td>12,871.48</td>
+      <td>64,357.41</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>2025-02-21</td>
+      <td>DK</td>
+      <td>195</td>
+      <td>90.61</td>
+      <td>17,668.95</td>
+      <td>0.10</td>
+      <td>1,766.90</td>
+      <td>15,902.06</td>
+      <td>0.25</td>
+      <td>3,975.51</td>
+      <td>19,877.57</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>2025-02-21</td>
+      <td>DE</td>
+      <td>360</td>
+      <td>281.63</td>
+      <td>101,386.80</td>
+      <td>0.15</td>
+      <td>15,208.02</td>
+      <td>86,178.78</td>
+      <td>0.19</td>
+      <td>16,373.97</td>
+      <td>102,552.75</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>2025-02-23</td>
+      <td>FR</td>
+      <td>186</td>
+      <td>177.43</td>
+      <td>33,001.98</td>
+      <td>0.10</td>
+      <td>3,300.20</td>
+      <td>29,701.78</td>
+      <td>0.20</td>
+      <td>5,940.36</td>
+      <td>35,642.14</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>2025-02-25</td>
+      <td>DK</td>
+      <td>24</td>
+      <td>201.77</td>
+      <td>4,842.48</td>
+      <td>0.03</td>
+      <td>145.27</td>
+      <td>4,697.21</td>
+      <td>0.25</td>
+      <td>1,174.30</td>
+      <td>5,871.51</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>2025-02-27</td>
+      <td>NL</td>
+      <td>41</td>
+      <td>170.09</td>
+      <td>6,973.69</td>
+      <td>0.05</td>
+      <td>348.68</td>
+      <td>6,625.01</td>
+      <td>0.21</td>
+      <td>1,391.25</td>
+      <td>8,016.26</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>2025-02-28</td>
+      <td>DE</td>
+      <td>41</td>
+      <td>258.04</td>
+      <td>10,579.64</td>
+      <td>0.10</td>
+      <td>1,057.96</td>
+      <td>9,521.68</td>
+      <td>0.19</td>
+      <td>1,809.12</td>
+      <td>11,330.79</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>2025-03-06</td>
+      <td>DK</td>
+      <td>57</td>
+      <td>54.32</td>
+      <td>3,096.24</td>
+      <td>0.03</td>
+      <td>92.89</td>
+      <td>3,003.35</td>
+      <td>0.25</td>
+      <td>750.84</td>
+      <td>3,754.19</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td>2025-03-07</td>
+      <td>DE</td>
+      <td>206</td>
+      <td>87.64</td>
+      <td>18,053.84</td>
+      <td>0.10</td>
+      <td>1,805.38</td>
+      <td>16,248.46</td>
+      <td>0.19</td>
+      <td>3,087.21</td>
+      <td>19,335.66</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td>2025-03-08</td>
+      <td>NL</td>
+      <td>74</td>
+      <td>86.82</td>
+      <td>6,424.68</td>
+      <td>0.05</td>
+      <td>321.23</td>
+      <td>6,103.45</td>
+      <td>0.21</td>
+      <td>1,281.72</td>
+      <td>7,385.17</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>2025-03-08</td>
+      <td>NL</td>
+      <td>299</td>
+      <td>125.83</td>
+      <td>37,623.17</td>
+      <td>0.10</td>
+      <td>3,762.32</td>
+      <td>33,860.85</td>
+      <td>0.21</td>
+      <td>7,110.78</td>
+      <td>40,971.63</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td>2025-03-19</td>
+      <td>FR</td>
+      <td>276</td>
+      <td>86.20</td>
+      <td>23,791.20</td>
+      <td>0.10</td>
+      <td>2,379.12</td>
+      <td>21,412.08</td>
+      <td>0.20</td>
+      <td>4,282.42</td>
+      <td>25,694.50</td>
+    </tr>
+  </tbody>
+</table>
+    
+
+    <h2>Sales results by country (state)</h2>
+    <img src="report_by_country.png" alt="Sales by country">
+
+    <h2>Sales results by month</h2>
+    <img src="report_by_month.png" alt="Sales by month">
+
+</body>
+</html>
