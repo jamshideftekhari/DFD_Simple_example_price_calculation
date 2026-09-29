@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Price Calculator</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Order Price Calculator</h1>
+    <p class="subtitle">Number of items &times; unit price, tiered discount, then country VAT/moms.</p>
+
+    {% if errors %}
+    <div class="errors">
+        <ul>
+            {% for e in errors %}
+            <li>{{ e }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="post" class="calc-form">
+        <label for="number_of_items">Number of items</label>
+        <input type="number" id="number_of_items" name="number_of_items" min="1" step="1"
+               value="{{ form_values.number_of_items }}" required>
+
+        <label for="unit_price">Unit price</label>
+        <input type="number" id="unit_price" name="unit_price" min="0" step="0.01"
+               value="{{ form_values.unit_price }}" required>
+
+        <label for="country_code">Country</label>
+        <select id="country_code" name="country_code">
+            {% for code, info in countries.items() %}
+            <option value="{{ code }}" {% if code == form_values.country_code %}selected{% endif %}>
+                {{ code }} - {{ info[0] }} ({{ (info[1] * 100) | round(0) | int }}% VAT)
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="order_date">Order date (optional)</label>
+        <input type="date" id="order_date" name="order_date" value="{{ form_values.order_date }}">
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if result %}
+    <h2>Receipt</h2>
+    <table class="receipt">
+        <tr><th>Items &times; unit price</th><td>{{ result.number_of_items }} &times; {{ "%.2f"|format(result.unit_price) }}</td></tr>
+        <tr><th>Country</th><td>{{ result.country_code }} ({{ countries[result.country_code][0] }})</td></tr>
+        {% if result.order_date %}
+        <tr><th>Date</th><td>{{ result.order_date }}</td></tr>
+        {% endif %}
+        <tr><th>Order value</th><td>{{ "%.2f"|format(result.order_value) }}</td></tr>
+        <tr><th>Discount ({{ (result.discount_rate * 100) | round(1) }}%)</th><td>-{{ "%.2f"|format(result.discount_amount) }}</td></tr>
+        <tr><th>Discounted value</th><td>{{ "%.2f"|format(result.discounted_value) }}</td></tr>
+        <tr><th>VAT/moms ({{ (result.vat_rate * 100) | round(1) }}%)</th><td>{{ "%.2f"|format(result.vat_amount) }}</td></tr>
+        <tr class="total"><th>Order total</th><td>{{ "%.2f"|format(result.order_total) }}</td></tr>
+    </table>
+    {% endif %}
+</body>
+</html>
